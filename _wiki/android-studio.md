@@ -106,11 +106,11 @@ Cmd --> Command
 
 在 Activity/Fragment 里点击类名前的小图标跳转到关联的 Layout XML 文件：
 
-![jump from class to layout]({{ site.url }}/images/wiki/jump-from-class-to-layout.jpg)
+![jump from class to layout]({{ site.url }}/images/posts/wiki/jump-from-class-to-layout.jpg)
 
 在 Layout XML 文件里点击根节点前的小图标跳转到关联的 Activity/Fragment：
 
-![jump from layout to class]({{ site.url }}/images/wiki/jump-from-layout-to-class.jpg)
+![jump from layout to class]({{ site.url }}/images/posts/wiki/jump-from-layout-to-class.jpg)
 
 ## 插件
 
@@ -171,7 +171,7 @@ Cmd --> Command
 
 2. 在右侧找到 Code Generation 这个 tab，在 Naming 的 Prefer longer names 里，field 的 Name prefix 里填上 `m`，Static field 的 Name prefix 里填上 `s`。
 
-![code generation naming](/images/wiki/code-generation-naming.png)
+![code generation naming](/images/posts/wiki/code-generation-naming.png)
 
 ### 设置 logcat 缓冲区条数
 

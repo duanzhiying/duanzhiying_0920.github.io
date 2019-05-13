@@ -1,18 +1,20 @@
 ---
 layout: page
 title: About
-description: 打码改变世界
-keywords: Zhuang Ma, 马壮
+description: 瑞雪兆丰年
+keywords: kidzy,duanzhiying
 comments: true
 menu: 关于
 permalink: /about/
 ---
 
-我是马壮，码而生，码而立。
+## 伴随我名字的我的名字：
+`瑞雪兆丰年`
 
-仰慕「优雅编码的艺术」。
 
-坚信熟能生巧，努力改变人生。
+## 伴随我信念的我的信念：
+`全世界都需要你`
+
 
 ## 联系
 
@@ -30,3 +32,6 @@ permalink: /about/
 {% endfor %}
 </div>
 {% endfor %}
+
+***
+未完待续……
