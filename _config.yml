@@ -2,7 +2,7 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:
-url: http://www.kidzying.com
+url: https://www.kidzying.com
 date_format: "ordinal"
 title: kidzy
 subtitle: "瑞雪兆丰年"
