@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 互信息概念和应用举例
+title: 用logging取代print
 date: 2019-05-28 09:16:00
 tags: 日志
 categories: python
@@ -46,7 +46,7 @@ logging是python内置的日志模块，其默认的Level包括如下几项：
 5. `CRITICAL`：严重错误
 
 ## Logging使用
-1. 基础版本
+### 1. 基础版本
 
     ```python
     import logging
@@ -57,7 +57,189 @@ logging是python内置的日志模块，其默认的Level包括如下几项：
     WARNING:root:Watch out!
     ```
 
-2. 在基础版本的基础上设置日志格式
-3. 在基础版本的基础上设置写入日志到文件
+### 2. 在基础版本的基础上设置日志格式和级别
 
-4. logger的使用
+    ```python
+    # 设置默认的level为DEBUG
+    # 设置log的格式
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s"  # 参数设置参考：https://docs.python.org/zh-cn/3.6/library/logging.html#logrecord-attributes
+    )
+    logging.warning('Warning')
+
+    > 输出：
+    [2019-05-30 08:57:05,543] root:WARNING: Warning
+    ```
+
+### 3. 在基础版本的基础上设置写入日志到文件
+
+    ```python
+    logging.basicConfig(filename='demo.log',
+                    level=logging.DEBUG,
+                    filemodel='w', # 设置追加写入文件
+                    format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s")
+    logging.debug('Debug')
+    logging.info('Info')
+    logging.warning('Warning')
+
+    > 输出（在demo.log文件）：
+    [2019-05-30 09:13:27,284] root:DEBUG: Debug
+    [2019-05-30 09:13:27,284] root:INFO: Info
+    [2019-05-30 09:13:27,284] root:WARNING: Warning
+    ```
+
+### 4. Logger类的使用
+
+#### 关键点：
+1. `Logger`：主要包括三大类的方法和配置：
+    * Logger.setLevel()
+    * Logger.addHandler() / Logger.removeHandler()
+    * Logger.addFilter() / Logger.removeFilter()
+
+2. `Handlers`：负责将适当的日志消息分派给处理程序的指定目标。更一般的场景：将所有类型的日志消息写入日志文件，将错误或更高级别的日志消息打印到控制台，将关键错误或异常信息发送到邮件，这就需要单独的Handles来处理对应的事情。其方法和配置主要包括：
+    * setLevel()
+    * setFormatter()
+    * addFilter() / removeFilter()
+
+3. `Formatters`：格式化
+
+#### 创建方法示例：
+1. 通过Python代码显式创建loggers, handlers, formatters
+
+    ```python
+    # create logger
+    logger = logging.getLogger('demo')
+    logger.setLevel(logging.DEBUG)
+
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    # create formatter
+    formatter = logging.Formatter('[%(asctime)s] %(name)s:%(levelname)s: %(message)s')
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    logger.addHandler(ch)
+
+    > 执行：
+    logger.debug('debug message')
+    logger.info('info message')
+    logger.warning('warn message')
+    logger.error('error message')
+    logger.critical('critical message')
+
+    > 输出：
+    [2019-05-30 09:34:51,856] demo:DEBUG: debug message
+    [2019-05-30 09:34:51,856] demo:INFO: info message
+    [2019-05-30 09:34:51,856] demo:WARNING: warn message
+    [2019-05-30 09:34:51,856] demo:ERROR: error message
+    [2019-05-30 09:34:51,856] demo:CRITICAL: critical message
+    ```
+2. 通过配置文件
+
+    **conf文件**
+
+    调用fileConfig()函数设置
+    ```
+    [loggers]
+    keys=root,simpleExample
+
+    [handlers]
+    keys=consoleHandler
+
+    [formatters]
+    keys=simpleFormatter
+
+    [logger_root]
+    level=DEBUG
+    handlers=consoleHandler
+
+    [logger_simpleExample]
+    level=DEBUG
+    handlers=consoleHandler
+    qualname=simpleExample
+    propagate=0
+
+    [handler_consoleHandler]
+    class=StreamHandler
+    level=DEBUG
+    formatter=simpleFormatter
+    args=(sys.stdout,)
+
+    [formatter_simpleFormatter]
+    format=%(asctime)s - %(name)s - %(levelname)s - %(message)s
+    ```
+
+    运行示例：
+
+    ```python
+    logging.config.fileConfig('logging.conf')
+    logger = logging.getLogger("simpleExample")
+
+    logger.debug('debug message')
+    logger.info('info message')
+    logger.warning('warn message')
+    logger.error('error message')
+    logger.critical('critical message')
+
+    > 输出：
+    2019-05-30 12:33:22,806 - simpleExample - DEBUG - debug message
+    2019-05-30 12:33:22,806 - simpleExample - INFO - info message
+    2019-05-30 12:33:22,806 - simpleExample - WARNING - warn message
+    2019-05-30 12:33:22,806 - simpleExample - ERROR - error message
+    2019-05-30 12:33:22,806 - simpleExample - CRITICAL - critical message
+    ```
+    **字典文件**
+
+    python 3.2之后支持使用字典来保存配置信息的日志记录方法。可以使用不同的方式填充字典：如json or yaml等。如下是采用YAML格式的配置文件：
+    ```yaml
+    version: 1
+    formatters:
+    simple:
+        format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+        stream: ext://sys.stdout
+    loggers:
+    simpleExample:
+        level: DEBUG
+        handlers: [console]
+        propagate: no
+    root:
+        level: DEBUG
+        handlers: [console]
+    ```
+
+    运行示例：
+    ```python
+    with open('logging.yaml', 'r') as f:
+        config = yaml.safe_load(f.read())
+        logging.config.dictConfig(config)
+
+    logger = logging.getLogger("simpleExample")
+
+    logger.debug('debug message')
+    logger.info('info message')
+    logger.warning('warn message')
+    logger.error('error message')
+    logger.critical('critical message')
+
+    > 输出：
+    [2019-05-30 12:36:31,864] simpleExample:DEBUG: debug message
+    [2019-05-30 12:36:31,864] simpleExample:INFO: info message
+    [2019-05-30 12:36:31,864] simpleExample:WARNING: warn message
+    [2019-05-30 12:36:31,865] simpleExample:ERROR: error message
+    [2019-05-30 12:36:31,865] simpleExample:CRITICAL: critical message
+    ```
+
+### 5. 参考文档
+1. [Logging HOWTO](https://docs.python.org/3.6/howto/logging.html)
+2. [替换你的print（logging模块超简明指南）](https://www.zlovezl.cn/articles/replacing-print-simple-introduction-to-logging/)
+
