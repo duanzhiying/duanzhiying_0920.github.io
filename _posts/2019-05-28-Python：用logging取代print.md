@@ -48,46 +48,46 @@ logging是python内置的日志模块，其默认的Level包括如下几项：
 ## Logging使用
 ### 1. 基础版本
 
-    ```python
-    import logging
-    logging.warning('Watch out!')  # will print a message to the console
-    logging.info('I told you so')  # will not print anything
+```python
+import logging
+logging.warning('Watch out!')  # will print a message to the console
+logging.info('I told you so')  # will not print anything
 
-    > 输出：
-    WARNING:root:Watch out!
-    ```
+> 输出：
+WARNING:root:Watch out!
+```
 
-### 2. 在基础版本的基础上设置日志格式和级别
+### 2. 设置日志格式和级别
 
-    ```python
-    # 设置默认的level为DEBUG
-    # 设置log的格式
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s"  # 参数设置参考：https://docs.python.org/zh-cn/3.6/library/logging.html#logrecord-attributes
-    )
-    logging.warning('Warning')
+```python
+# 设置默认的level为DEBUG
+# 设置log的格式
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s"  # 参数设置参考：https://docs.python.org/zh-cn/3.6/library/logging.html#logrecord-attributes
+)
+logging.warning('Warning')
 
-    > 输出：
-    [2019-05-30 08:57:05,543] root:WARNING: Warning
-    ```
+> 输出：
+[2019-05-30 08:57:05,543] root:WARNING: Warning
+```
 
-### 3. 在基础版本的基础上设置写入日志到文件
+### 3. 设置写入日志到文件
 
-    ```python
-    logging.basicConfig(filename='demo.log',
-                    level=logging.DEBUG,
-                    filemodel='w', # 设置追加写入文件
-                    format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s")
-    logging.debug('Debug')
-    logging.info('Info')
-    logging.warning('Warning')
+```python
+logging.basicConfig(filename='demo.log',
+                level=logging.DEBUG,
+                filemodel='w', # 设置追加写入文件
+                format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s")
+logging.debug('Debug')
+logging.info('Info')
+logging.warning('Warning')
 
-    > 输出（在demo.log文件）：
-    [2019-05-30 09:13:27,284] root:DEBUG: Debug
-    [2019-05-30 09:13:27,284] root:INFO: Info
-    [2019-05-30 09:13:27,284] root:WARNING: Warning
-    ```
+> 输出（在demo.log文件）：
+[2019-05-30 09:13:27,284] root:DEBUG: Debug
+[2019-05-30 09:13:27,284] root:INFO: Info
+[2019-05-30 09:13:27,284] root:WARNING: Warning
+```
 
 ### 4. Logger类的使用
 
